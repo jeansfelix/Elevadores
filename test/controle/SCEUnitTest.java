@@ -18,10 +18,10 @@ public class SCEUnitTest
     @After
     public void limparSCE()
     {
-        SCE.destino_usuarios_por_andar.clear();
+        SCE.requisicoes_ordenadas_por_andar.clear();
         SCE.posicao_inicial_elevadores.clear();
     }
-    
+
     @Test
     public void testMain_DeveArmazenarValoresCorretos() throws Exception
     {
@@ -40,16 +40,16 @@ public class SCEUnitTest
         Assert.assertEquals(posicao_inicial_segundo_elevador, SCE.posicao_inicial_elevadores.get(1).intValue());
 
         int quantidadeDePessoasNoPrimeiroAndar = 6;
-        Integer[] andaresDestinoEsperadosNoPrimeiroAndar = { 1, 4, 2, 3, 3, 4 };
+        int[] andaresDestinoEsperadosNoPrimeiroAndar = { 1, 4, 2, 3, 3, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar, SCE.destino_usuarios_por_andar.get(0).length);
-        Assert.assertArrayEquals(andaresDestinoEsperadosNoPrimeiroAndar, SCE.destino_usuarios_por_andar.get(0));
-
+        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar, SCE.requisicoes_ordenadas_por_andar.get(0).length);
+        verificarRequisicoes(0, andaresDestinoEsperadosNoPrimeiroAndar);
+        
         int quantidadeDePessoasNoSegundoAndar = 4;
-        Integer[] andaresDestinoEsperadosNoSegundoAndar = { 0, 3, 0, 4 };
+        int[] andaresDestinoEsperadosNoSegundoAndar = { 0, 3, 0, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar, SCE.destino_usuarios_por_andar.get(1).length);
-        Assert.assertArrayEquals(andaresDestinoEsperadosNoSegundoAndar, SCE.destino_usuarios_por_andar.get(1));
+        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar, SCE.requisicoes_ordenadas_por_andar.get(1).length);
+        verificarRequisicoes(1, andaresDestinoEsperadosNoSegundoAndar);
     }
 
     @Test
@@ -68,6 +68,14 @@ public class SCEUnitTest
         }
     }
 
+    private void verificarRequisicoes(int andar, int[] andaresDestinoEsperados)
+    {
+        for (int i = 0; i < andaresDestinoEsperados.length; i++)
+        {
+            Assert.assertEquals(andaresDestinoEsperados[i], SCE.requisicoes_ordenadas_por_andar.get(andar)[i].getAndar());
+        }
+    }
+    
     private String[] prepararEntrada(String dataset_entrada) throws FileNotFoundException
     {
         String[] entrada = new String[36];
