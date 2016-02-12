@@ -2,25 +2,16 @@ package controle;
 
 import java.util.List;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import modelo.Requisicao;
 import modelo.excecoes.EntradaIncorretaExcetion;
-import util.UnitTest;
 
 public class SCEUnitTest extends UnitTest
 {
     private static final String DATASET_ENTRADA_CORRETA_MAIN   = "test/controle/dataset/entrada_correta";
     private static final String DATASET_ENTRADA_INCORRETA_MAIN = "test/controle/dataset/entrada_incorreta";
-
-    @After
-    public void limparSCE()
-    {
-        SCE.requisicoes_ordenadas_por_andar.clear();
-        SCE.posicao_inicial_elevadores.clear();
-    }
 
     @Test
     public void testMain_DeveArmazenarValoresCorretos() throws Exception

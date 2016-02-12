@@ -21,19 +21,13 @@ public class Elevador implements Runnable
     {
         int andarDestinoAcima = andarAtual;
         int andarDestinoAbaixo = andarAtual;
+        Integer andarDestino = null;
 
-        while (true)
+        while (!(andarDestinoAbaixo < 0 && andarDestinoAcima >= SCE.quantidade_andares))
         {
-            if (andarDestinoAcima < SCE.quantidade_andares
-                    && !SCE.requisicoes_ordenadas_por_andar.get(andarDestinoAcima).isEmpty())
-            {
-                return andarDestinoAcima;
-            }
+            andarDestino = escolherAndarComRequisicaoMaisProximo(andarDestinoAcima, andarDestinoAbaixo);
 
-            if (andarDestinoAbaixo >= 0 && !SCE.requisicoes_ordenadas_por_andar.get(andarDestinoAbaixo).isEmpty())
-            {
-                return andarDestinoAbaixo;
-            }
+            if (andarDestino != null) return andarDestino;
 
             if (andarDestinoAcima < SCE.quantidade_andares
                     && SCE.requisicoes_ordenadas_por_andar.get(andarDestinoAcima).isEmpty())
@@ -45,14 +39,47 @@ public class Elevador implements Runnable
             {
                 andarDestinoAbaixo = andarDestinoAbaixo - 1;
             }
-
-            if (andarDestinoAbaixo < 0 && andarDestinoAcima >= SCE.quantidade_andares)
-            {
-                break;
-            }
         }
 
         return null;
+    }
+
+    private Integer escolherAndarComRequisicaoMaisProximo(int andarDestinoAcima, int andarDestinoAbaixo)
+    {
+        Integer andarDestino = null;
+
+        if (andarDestinoAcima < SCE.quantidade_andares && verificarSeAndarTemRequisicao(andarDestinoAcima))
+        {
+            andarDestino = andarDestinoAcima;
+        }
+
+        if (andarDestinoAbaixo >= 0 && verificarSeAndarTemRequisicao(andarDestinoAbaixo))
+        {
+            if (andarDestino != null)
+            {
+                return obterAndarComMaisPessoasEsperando(andarDestinoAbaixo, andarDestino);
+            }
+
+            andarDestino = andarDestinoAbaixo;
+        }
+
+        return andarDestino;
+    }
+
+    private int obterAndarComMaisPessoasEsperando(int andarDestinoAbaixo, Integer andarDestino)
+    {
+        if (SCE.requisicoes_ordenadas_por_andar.get(andarDestinoAbaixo).size() > SCE.requisicoes_ordenadas_por_andar
+                .get(andarDestino).size())
+        {
+            return andarDestinoAbaixo;
+        }
+
+        return andarDestino;
+    }
+
+    private boolean verificarSeAndarTemRequisicao(int andar)
+    {
+        return !SCE.requisicoes_ordenadas_por_andar.get(andar).isEmpty();
     }
 
     public int getAndarAtual()
