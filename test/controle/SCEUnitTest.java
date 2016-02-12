@@ -1,16 +1,16 @@
 package controle;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.Scanner;
+import java.util.List;
 
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import modelo.Requisicao;
 import modelo.excecoes.EntradaIncorretaExcetion;
+import util.UnitTest;
 
-public class SCEUnitTest
+public class SCEUnitTest extends UnitTest
 {
     private static final String DATASET_ENTRADA_CORRETA_MAIN   = "test/controle/dataset/entrada_correta";
     private static final String DATASET_ENTRADA_INCORRETA_MAIN = "test/controle/dataset/entrada_incorreta";
@@ -42,13 +42,13 @@ public class SCEUnitTest
         int quantidadeDePessoasNoPrimeiroAndar = 6;
         int[] andaresDestinoEsperadosNoPrimeiroAndar = { 1, 4, 2, 3, 3, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar, SCE.requisicoes_ordenadas_por_andar.get(0).length);
+        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar, SCE.requisicoes_ordenadas_por_andar.get(0).size());
         verificarRequisicoes(0, andaresDestinoEsperadosNoPrimeiroAndar);
-        
+
         int quantidadeDePessoasNoSegundoAndar = 4;
         int[] andaresDestinoEsperadosNoSegundoAndar = { 0, 3, 0, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar, SCE.requisicoes_ordenadas_por_andar.get(1).length);
+        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar, SCE.requisicoes_ordenadas_por_andar.get(1).size());
         verificarRequisicoes(1, andaresDestinoEsperadosNoSegundoAndar);
     }
 
@@ -72,27 +72,9 @@ public class SCEUnitTest
     {
         for (int i = 0; i < andaresDestinoEsperados.length; i++)
         {
-            Assert.assertEquals(andaresDestinoEsperados[i], SCE.requisicoes_ordenadas_por_andar.get(andar)[i].getAndar());
+            List<Requisicao> listaRequisicoes = SCE.requisicoes_ordenadas_por_andar.get(andar);
+            Assert.assertEquals(andaresDestinoEsperados[i], listaRequisicoes.get(i).getAndar());
         }
     }
-    
-    private String[] prepararEntrada(String dataset_entrada) throws FileNotFoundException
-    {
-        String[] entrada = new String[36];
 
-        File arq_entrada = new File(dataset_entrada);
-
-        Scanner leitor = new Scanner(arq_entrada);
-
-        int i = 0;
-        while (leitor.hasNext())
-        {
-            entrada[i] = leitor.next();
-            i++;
-        }
-
-        leitor.close();
-
-        return entrada;
-    }
 }

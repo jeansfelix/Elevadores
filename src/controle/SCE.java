@@ -8,14 +8,14 @@ import modelo.excecoes.EntradaIncorretaExcetion;
 
 public class SCE
 {
-    protected final static List<Integer>      posicao_inicial_elevadores      = new ArrayList<Integer>();
-    protected final static List<Requisicao[]> requisicoes_ordenadas_por_andar = new ArrayList<Requisicao[]>();
+    protected final static List<Integer>          posicao_inicial_elevadores      = new ArrayList<Integer>();
+    protected final static List<List<Requisicao>> requisicoes_ordenadas_por_andar = new ArrayList<List<Requisicao>>();
 
-    protected static int                      quantidade_andares;
-    protected static int                      quantidade_elevadores;
-    protected static int                      maximo_usuarios_por_elevador;
+    protected static int                          quantidade_andares;
+    protected static int                          quantidade_elevadores;
+    protected static int                          maximo_usuarios_por_elevador;
 
-    private static GeradorDeIndentificadores  geradorDeIndentificadores       = new GeradorDeIndentificadores();
+    private static GeradorDeIndentificadores      geradorDeIndentificadores       = new GeradorDeIndentificadores();
 
     public static void main(String[] args)
     {
@@ -52,10 +52,18 @@ public class SCE
 
         for (int i = 0; i < quantidade_andares; i++)
         {
-            int quantidadeDePessoasNoAndar = Integer.parseInt(args[posicaoNoArrayDaQuantidadePessoasNoAndar]);
-            Requisicao[] destinos = new Requisicao[quantidadeDePessoasNoAndar];
+            List<Requisicao> destinos = new ArrayList<Requisicao>();
+            String stringQuantidadeDePessoasNoAndar = args[posicaoNoArrayDaQuantidadePessoasNoAndar];
+            
+            if (stringQuantidadeDePessoasNoAndar == null || stringQuantidadeDePessoasNoAndar.isEmpty()) 
+            {
+                requisicoes_ordenadas_por_andar.add(new ArrayList<Requisicao>());
+                continue;
+            }
+            
+            int quantidadeDePessoasNoAndar = Integer.parseInt(stringQuantidadeDePessoasNoAndar);
 
-            for (int j = 0; j < destinos.length; j++)
+            for (int j = 0; j < quantidadeDePessoasNoAndar; j++)
             {
                 int andarDestino = Integer.parseInt(args[posicaoNoArrayDaQuantidadePessoasNoAndar + j + 1]);
 
@@ -64,7 +72,7 @@ public class SCE
                     throw new EntradaIncorretaExcetion(EntradaIncorretaExcetion.ANDAR_DESTINO_INCORRETO);
                 }
 
-                destinos[j] = new Requisicao(geradorDeIndentificadores.pegarNovoIdentificador(), andarDestino);
+                destinos.add(new Requisicao(geradorDeIndentificadores.pegarNovoIdentificador(), andarDestino));
             }
 
             requisicoes_ordenadas_por_andar.add(destinos);
