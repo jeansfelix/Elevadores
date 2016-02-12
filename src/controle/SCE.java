@@ -8,66 +8,72 @@ import modelo.excecoes.EntradaIncorretaExcetion;
 
 public class SCE
 {
-    protected final static List<Integer>          posicao_inicial_elevadores      = new ArrayList<Integer>();
-    protected final static List<List<Requisicao>> requisicoes_ordenadas_por_andar = new ArrayList<List<Requisicao>>();
+    protected final static List<Integer>          posicaoInicialDosElevadores  = new ArrayList<Integer>();
+    protected final static List<List<Requisicao>> requisicoesOrdenadasPorAndar = new ArrayList<List<Requisicao>>();
 
-    protected static int                          quantidade_andares;
-    protected static int                          quantidade_elevadores;
-    protected static int                          maximo_usuarios_por_elevador;
+    protected static int                          numeroDeRequisicoes           = 0;
 
-    private static GeradorDeIndentificadores      geradorDeIndentificadores       = new GeradorDeIndentificadores();
+    protected static int                          quantidadeDeAndares;
+    protected static int                          quantidadeDeElevadores;
+    protected static int                          maximoDeUsuariosPorElevador;
 
-    public static void main(String[] args)
+    private static GeradorDeIndentificadores      geradorDeIndentificadores    = new GeradorDeIndentificadores();
+
+    public static void lerArgumentos(String[] args)
     {
-        System.out.println("Inicio Programa.");
-        ContadorDeTempo contarTempo = new ContadorDeTempo();
-
-        contarTempo.iniciarMarcacaoDeTempo();
-
-        lerArgumentos(args);
-
-        Double tempoDecorrido = contarTempo.finalizarMarcacaoDeTempo();
-        System.out.println("Fim de Programa.");
-        System.out.println("Tempo Total: " + tempoDecorrido + "s");
-    }
-
-    private static void lerArgumentos(String[] args)
-    {
-
-        quantidade_andares = Integer.parseInt(args[0]);
-        quantidade_elevadores = Integer.parseInt(args[1]);
-        maximo_usuarios_por_elevador = Integer.parseInt(args[2]);
+        quantidadeDeAndares = Integer.parseInt(args[0]);
+        quantidadeDeElevadores = Integer.parseInt(args[1]);
+        maximoDeUsuariosPorElevador = Integer.parseInt(args[2]);
 
         int inicio_declaracao_posicao_inicial_elevadores = 3;
 
-        for (int i = 0; i < quantidade_elevadores; i++)
-        {
-            posicao_inicial_elevadores.add(Integer.parseInt(args[i + inicio_declaracao_posicao_inicial_elevadores]));
-        }
+        obterPosicaoInicialElevadores(args, inicio_declaracao_posicao_inicial_elevadores);
 
-        int inicio_declaracao_usuarios_em_cada_andar = quantidade_elevadores
+        int inicio_declaracao_usuarios_em_cada_andar = quantidadeDeElevadores
                 + inicio_declaracao_posicao_inicial_elevadores;
 
+        obterRequisicaoPorAndar(args, inicio_declaracao_usuarios_em_cada_andar);
+    }
+
+    public static synchronized List<Requisicao> atenderRequisicao(int andar)
+    {
+        List<Requisicao> requisicoes = new ArrayList<Requisicao>();
+        
+        for (int i = 0; i < maximoDeUsuariosPorElevador; i++)
+        {
+            if (requisicoesOrdenadasPorAndar.get(andar).isEmpty()) 
+            {
+                break;
+            }
+            
+            requisicoes.add(requisicoesOrdenadasPorAndar.get(andar).remove(0));
+        } 
+        
+        return requisicoes;
+    }
+
+    private static void obterRequisicaoPorAndar(String[] args, int inicio_declaracao_usuarios_em_cada_andar)
+    {
         int posicaoNoArrayDaQuantidadePessoasNoAndar = inicio_declaracao_usuarios_em_cada_andar;
 
-        for (int i = 0; i < quantidade_andares; i++)
+        for (int i = 0; i < quantidadeDeAndares; i++)
         {
             List<Requisicao> destinos = new ArrayList<Requisicao>();
             String stringQuantidadeDePessoasNoAndar = args[posicaoNoArrayDaQuantidadePessoasNoAndar];
-            
-            if (stringQuantidadeDePessoasNoAndar == null || stringQuantidadeDePessoasNoAndar.isEmpty()) 
+
+            if (stringQuantidadeDePessoasNoAndar == null || stringQuantidadeDePessoasNoAndar.isEmpty())
             {
-                requisicoes_ordenadas_por_andar.add(new ArrayList<Requisicao>());
+                requisicoesOrdenadasPorAndar.add(new ArrayList<Requisicao>());
                 continue;
             }
-            
+
             int quantidadeDePessoasNoAndar = Integer.parseInt(stringQuantidadeDePessoasNoAndar);
 
             for (int j = 0; j < quantidadeDePessoasNoAndar; j++)
             {
                 int andarDestino = Integer.parseInt(args[posicaoNoArrayDaQuantidadePessoasNoAndar + j + 1]);
 
-                if (andarDestino > (quantidade_andares - 1))
+                if (andarDestino > (quantidadeDeAndares - 1))
                 {
                     throw new EntradaIncorretaExcetion(EntradaIncorretaExcetion.ANDAR_DESTINO_INCORRETO);
                 }
@@ -75,9 +81,22 @@ public class SCE
                 destinos.add(new Requisicao(geradorDeIndentificadores.pegarNovoIdentificador(), andarDestino));
             }
 
-            requisicoes_ordenadas_por_andar.add(destinos);
+            if (!destinos.isEmpty())
+            {
+                numeroDeRequisicoes += destinos.size();
+            }
+
+            requisicoesOrdenadasPorAndar.add(destinos);
             posicaoNoArrayDaQuantidadePessoasNoAndar = posicaoNoArrayDaQuantidadePessoasNoAndar
                     + quantidadeDePessoasNoAndar + 1;
+        }
+    }
+
+    private static void obterPosicaoInicialElevadores(String[] args, int inicio_declaracao_posicao_inicial_elevadores)
+    {
+        for (int i = 0; i < quantidadeDeElevadores; i++)
+        {
+            posicaoInicialDosElevadores.add(Integer.parseInt(args[i + inicio_declaracao_posicao_inicial_elevadores]));
         }
     }
 }

@@ -13,8 +13,9 @@ public class UnitTest
     @After
     public void limparSCE()
     {
-        SCE.requisicoes_ordenadas_por_andar.clear();
-        SCE.posicao_inicial_elevadores.clear();
+        SCE.requisicoesOrdenadasPorAndar.clear();
+        SCE.posicaoInicialDosElevadores.clear();
+        SCE.numeroDeRequisicoes = 0;
     }
     
     public String[] prepararEntrada(String dataset_entrada) throws FileNotFoundException

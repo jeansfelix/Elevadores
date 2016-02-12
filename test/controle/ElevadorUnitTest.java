@@ -15,7 +15,7 @@ public class ElevadorUnitTest extends UnitTest
         int andarAtual = 1;
         int identificadorElevador = 0;
         Elevador elevador = new Elevador(identificadorElevador, andarAtual);
-        SCE.main(prepararEntrada(REQUISICAO_NOS_ANDARES_ZERO_E_UM));
+        SCE.lerArgumentos(prepararEntrada(REQUISICAO_NOS_ANDARES_ZERO_E_UM));
 
         int andar = elevador.buscarAndarComRequisicao();
 
@@ -29,7 +29,7 @@ public class ElevadorUnitTest extends UnitTest
         int andarAtual = 0;
         int identificadorElevador = 0;
         Elevador elevador = new Elevador(identificadorElevador, andarAtual);
-        SCE.main(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
+        SCE.lerArgumentos(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
 
         int andar = elevador.buscarAndarComRequisicao();
 
@@ -45,7 +45,7 @@ public class ElevadorUnitTest extends UnitTest
         int andarComMaiorNumeroDeRequisicoes = 0;
         Elevador elevador = new Elevador(identificadorElevador, andarAtual);
 
-        SCE.main(prepararEntrada(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES));
+        SCE.lerArgumentos(prepararEntrada(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES));
 
         int andar = elevador.buscarAndarComRequisicao();
 
