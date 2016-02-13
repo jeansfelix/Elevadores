@@ -9,18 +9,17 @@ public class Main
         System.out.println("Inicio Programa.");
 
         SCE sistemaControladorDeElevadores = new SCE();
-        ContadorDeTempo contarTempo = new ContadorDeTempo();
 
-        contarTempo.iniciarMarcacaoDeTempo();
+        ContadorDeTempo.iniciarMarcacaoDeTempo();
 
         sistemaControladorDeElevadores.lerArgumentos(args);
         sistemaControladorDeElevadores.criarElevadores();
         sistemaControladorDeElevadores.iniciarElevadores();
         sistemaControladorDeElevadores.esperarElevadoresTerminarem();
         
-        Double tempoDecorrido = contarTempo.finalizarMarcacaoDeTempo();
+        Long tempoDecorrido = ContadorDeTempo.tempDecorrido();
         
         System.out.println("Fim de Programa.");
-        System.out.println("Tempo Total: " + tempoDecorrido + "s");
+        System.out.println("Tempo Total: " + tempoDecorrido + "ms");
     }
 }

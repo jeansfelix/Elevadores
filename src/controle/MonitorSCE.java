@@ -3,6 +3,7 @@ package controle;
 import java.util.ArrayList;
 import java.util.List;
 
+import modelo.TuplaAndarRequisicoes;
 import modelo.Requisicao;
 
 public class MonitorSCE
@@ -16,26 +17,28 @@ public class MonitorSCE
     private int                          quantidadeDeElevadores;
     private int                          maximoDeUsuariosPorElevador;
 
-    public synchronized List<Requisicao> obterPessoasNoAndar(int andar)
+    public synchronized TuplaAndarRequisicoes obterPessoasNoAndarComRequisicaoMaisProximo(int andarAtual)
     {
+        int andarDestino = buscarAndarComRequisicaoMaisProximo(andarAtual);
+        
         List<Requisicao> requisicoes = new ArrayList<Requisicao>();
 
         for (int i = 0; i < maximoDeUsuariosPorElevador; i++)
         {
-            if (requisicoesOrdenadasPorAndar.get(andar).isEmpty())
+            if (requisicoesOrdenadasPorAndar.get(andarDestino).isEmpty())
             {
                 break;
             }
 
-            requisicoes.add(requisicoesOrdenadasPorAndar.get(andar).remove(0));
+            requisicoes.add(requisicoesOrdenadasPorAndar.get(andarDestino).remove(0));
         }
 
         decrementarNumeroDeRequisicoes(requisicoes);
 
-        return requisicoes;
+        return new TuplaAndarRequisicoes(andarDestino, requisicoes);
     }
 
-    public synchronized Integer buscarAndarComRequisicao(int andarAtual)
+    protected Integer buscarAndarComRequisicaoMaisProximo(int andarAtual)
     {
         int andarDestinoAcima = andarAtual;
         int andarDestinoAbaixo = andarAtual;
@@ -99,6 +102,11 @@ public class MonitorSCE
     {
         return !requisicoesOrdenadasPorAndar.get(andar).isEmpty();
     }
+    
+    public synchronized boolean existemRequisicoes()
+    {
+        return numeroDeRequisicoes > 0;
+    }
 
     public void incrementarNumeroDeRequisicoes(List<Requisicao> destinos)
     {
@@ -111,11 +119,6 @@ public class MonitorSCE
     public void decrementarNumeroDeRequisicoes(List<Requisicao> requisicoes)
     {
         numeroDeRequisicoes -= requisicoes.size();
-    }
-
-    public boolean existemRequisicoes()
-    {
-        return numeroDeRequisicoes > 0;
     }
 
     public int getNumeroDeRequisicoes()

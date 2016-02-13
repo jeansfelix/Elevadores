@@ -2,17 +2,17 @@ package controle.util;
 
 public class ContadorDeTempo
 {
-    private Long tempoInicial;
-    
-    public void iniciarMarcacaoDeTempo()
+    private static Long tempoInicial;
+
+    public static void iniciarMarcacaoDeTempo()
     {
         tempoInicial = System.currentTimeMillis();
     }
-    
-    public Double finalizarMarcacaoDeTempo()
+
+    public static Long tempDecorrido()
     {
         Long tempoFinal = System.currentTimeMillis();
-        
-        return (Double) ((tempoFinal - tempoInicial) / 1000.0);
+
+        return (tempoFinal - tempoInicial);
     }
 }
