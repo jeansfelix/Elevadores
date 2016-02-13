@@ -14,8 +14,10 @@ public class ElevadorUnitTest extends UnitTest
     {
         int andarAtual = 1;
         int identificadorElevador = 0;
-        Elevador elevador = new Elevador(identificadorElevador, andarAtual);
-        SCE.lerArgumentos(prepararEntrada(REQUISICAO_NOS_ANDARES_ZERO_E_UM));
+        SCE sce = new SCE();
+        sce.lerArgumentos(prepararEntrada(REQUISICAO_NOS_ANDARES_ZERO_E_UM));
+
+        Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
         int andar = elevador.buscarAndarComRequisicao();
 
@@ -28,8 +30,10 @@ public class ElevadorUnitTest extends UnitTest
     {
         int andarAtual = 0;
         int identificadorElevador = 0;
-        Elevador elevador = new Elevador(identificadorElevador, andarAtual);
-        SCE.lerArgumentos(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
+        SCE sce = new SCE();
+        sce.lerArgumentos(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
+
+        Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
         int andar = elevador.buscarAndarComRequisicao();
 
@@ -43,13 +47,28 @@ public class ElevadorUnitTest extends UnitTest
         int identificadorElevador = 0;
         int andarAtual = 1;
         int andarComMaiorNumeroDeRequisicoes = 0;
-        Elevador elevador = new Elevador(identificadorElevador, andarAtual);
+        SCE sce = new SCE();
+        sce.lerArgumentos(prepararEntrada(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES));
 
-        SCE.lerArgumentos(prepararEntrada(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES));
+        Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
         int andar = elevador.buscarAndarComRequisicao();
 
         Assert.assertEquals(andarComMaiorNumeroDeRequisicoes, andar);
     }
 
+    @Test
+    public void testRun_UmElevadorUmaRequisicaoParOAndarDois_ElevadorDeveTerminarNoAndarDois() throws Exception
+    {
+        int identificadorElevador = 0;
+        int andarAtual = 1;
+        SCE sce = new SCE();
+        sce.lerArgumentos(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
+
+        Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
+
+        elevador.run();
+
+        Assert.assertEquals(2, elevador.getAndarAtual());
+    }
 }

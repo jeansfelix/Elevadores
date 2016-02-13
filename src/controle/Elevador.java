@@ -6,11 +6,13 @@ import modelo.Requisicao;
 
 public class Elevador implements Runnable
 {
-    private int identificador;
-    private int andarAtual;
+    private MonitorSCE monitorSCE;
+    private int        identificador;
+    private int        andarAtual;
 
-    public Elevador(int identificador, int andarInicial)
+    public Elevador(int identificador, int andarInicial, MonitorSCE monitorSCE)
     {
+        this.monitorSCE = monitorSCE;
         this.identificador = identificador;
         this.andarAtual = andarInicial;
     }
@@ -18,11 +20,11 @@ public class Elevador implements Runnable
     @Override
     public void run()
     {
-        while (SCE.numeroDeRequisicoes > 0)
+        while (monitorSCE.existemRequisicoes())
         {
             andarAtual = buscarAndarComRequisicao();
 
-            List<Requisicao> requisicoesAtendidas = SCE.atenderRequisicao(andarAtual);
+            List<Requisicao> requisicoesAtendidas = monitorSCE.atenderRequisicao(andarAtual);
 
             for (Requisicao requisicao : requisicoesAtendidas)
             {
@@ -37,19 +39,20 @@ public class Elevador implements Runnable
         int andarDestinoAbaixo = andarAtual;
         Integer andarDestino = null;
 
-        while (!(andarDestinoAbaixo < 0 && andarDestinoAcima >= SCE.quantidadeDeAndares))
+        while (!(andarDestinoAbaixo < 0 && andarDestinoAcima >= monitorSCE.getQuantidadeDeAndares()))
         {
             andarDestino = escolherAndarComRequisicaoMaisProximo(andarDestinoAcima, andarDestinoAbaixo);
 
             if (andarDestino != null) return andarDestino;
 
-            if (andarDestinoAcima < SCE.quantidadeDeAndares
-                    && SCE.requisicoesOrdenadasPorAndar.get(andarDestinoAcima).isEmpty())
+            if (andarDestinoAcima < monitorSCE.getQuantidadeDeAndares()
+                    && monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAcima).isEmpty())
             {
                 andarDestinoAcima = andarDestinoAcima + 1;
             }
 
-            if (andarDestinoAbaixo >= 0 && SCE.requisicoesOrdenadasPorAndar.get(andarDestinoAbaixo).isEmpty())
+            if (andarDestinoAbaixo >= 0
+                    && monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAbaixo).isEmpty())
             {
                 andarDestinoAbaixo = andarDestinoAbaixo - 1;
             }
@@ -62,7 +65,7 @@ public class Elevador implements Runnable
     {
         Integer andarDestino = null;
 
-        if (andarDestinoAcima < SCE.quantidadeDeAndares && verificarSeAndarTemRequisicao(andarDestinoAcima))
+        if (andarDestinoAcima < monitorSCE.getQuantidadeDeAndares() && verificarSeAndarTemRequisicao(andarDestinoAcima))
         {
             andarDestino = andarDestinoAcima;
         }
@@ -82,8 +85,8 @@ public class Elevador implements Runnable
 
     private int obterAndarComMaisPessoasEsperando(int andarDestinoAbaixo, Integer andarDestino)
     {
-        if (SCE.requisicoesOrdenadasPorAndar.get(andarDestinoAbaixo).size() > SCE.requisicoesOrdenadasPorAndar
-                .get(andarDestino).size())
+        if (monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAbaixo).size() > monitorSCE
+                .getRequisicoesOrdenadasPorAndar().get(andarDestino).size())
         {
             return andarDestinoAbaixo;
         }
@@ -93,7 +96,7 @@ public class Elevador implements Runnable
 
     private boolean verificarSeAndarTemRequisicao(int andar)
     {
-        return !SCE.requisicoesOrdenadasPorAndar.get(andar).isEmpty();
+        return !monitorSCE.getRequisicoesOrdenadasPorAndar().get(andar).isEmpty();
     }
 
     public int getAndarAtual()

@@ -1,4 +1,4 @@
-package controle;
+package controle.util;
 
 public class ContadorDeTempo
 {

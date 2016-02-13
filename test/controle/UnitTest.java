@@ -4,20 +4,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 
-import org.junit.After;
-
-import controle.SCE;
-
 public class UnitTest
 {
-    @After
-    public void limparSCE()
-    {
-        SCE.requisicoesOrdenadasPorAndar.clear();
-        SCE.posicaoInicialDosElevadores.clear();
-        SCE.numeroDeRequisicoes = 0;
-    }
-    
+   
     public String[] prepararEntrada(String dataset_entrada) throws FileNotFoundException
     {
         String[] entrada = new String[36];

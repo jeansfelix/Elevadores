@@ -19,30 +19,35 @@ public class SCEUnitTest extends UnitTest
     public void testLerArgumentos_DeveArmazenarValoresCorretos() throws Exception
     {
         String[] args = prepararEntrada(DATASET_ENTRADA_CORRETA_MAIN);
+        SCE sce = new SCE();
 
-        SCE.lerArgumentos(args);
+        sce.lerArgumentos(args);
 
-        Assert.assertEquals(5, SCE.quantidadeDeAndares);
-        Assert.assertEquals(2, SCE.quantidadeDeElevadores);
-        Assert.assertEquals(6, SCE.maximoDeUsuariosPorElevador);
+        Assert.assertEquals(5, sce.getMonitorSCE().getQuantidadeDeAndares());
+        Assert.assertEquals(2, sce.getMonitorSCE().getQuantidadeDeElevadores());
+        Assert.assertEquals(6, sce.getMonitorSCE().getMaximoDeUsuariosPorElevador());
 
         int posicao_inicial_primeiro_elevador = 0;
         int posicao_inicial_segundo_elevador = 4;
 
-        Assert.assertEquals(posicao_inicial_primeiro_elevador, SCE.posicaoInicialDosElevadores.get(0).intValue());
-        Assert.assertEquals(posicao_inicial_segundo_elevador, SCE.posicaoInicialDosElevadores.get(1).intValue());
+        Assert.assertEquals(posicao_inicial_primeiro_elevador,
+                sce.getMonitorSCE().getPosicaoInicialDosElevadores().get(0).intValue());
+        Assert.assertEquals(posicao_inicial_segundo_elevador,
+                sce.getMonitorSCE().getPosicaoInicialDosElevadores().get(1).intValue());
 
         int quantidadeDePessoasNoPrimeiroAndar = 6;
         int[] andaresDestinoEsperadosNoPrimeiroAndar = { 1, 4, 2, 3, 3, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar, SCE.requisicoesOrdenadasPorAndar.get(0).size());
-        verificarRequisicoes(0, andaresDestinoEsperadosNoPrimeiroAndar);
+        Assert.assertEquals(quantidadeDePessoasNoPrimeiroAndar,
+                sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(0).size());
+        verificarRequisicoes(0, andaresDestinoEsperadosNoPrimeiroAndar, sce);
 
         int quantidadeDePessoasNoSegundoAndar = 4;
         int[] andaresDestinoEsperadosNoSegundoAndar = { 0, 3, 0, 4 };
 
-        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar, SCE.requisicoesOrdenadasPorAndar.get(1).size());
-        verificarRequisicoes(1, andaresDestinoEsperadosNoSegundoAndar);
+        Assert.assertEquals(quantidadeDePessoasNoSegundoAndar,
+                sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(1).size());
+        verificarRequisicoes(1, andaresDestinoEsperadosNoSegundoAndar, sce);
     }
 
     @Test
@@ -52,7 +57,9 @@ public class SCEUnitTest extends UnitTest
 
         try
         {
-            SCE.lerArgumentos(args);
+            SCE sce = new SCE();
+
+            sce.lerArgumentos(args);
             Assert.fail("Deveria lançar exceção ao ler andar destino maior que o último andar.");
         }
         catch (Exception e)
@@ -66,11 +73,11 @@ public class SCEUnitTest extends UnitTest
             throws Exception
     {
         String[] args = prepararEntrada(CAPACIDADE_MAXIMA_TRES_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
-        SCE.lerArgumentos(args);
+        SCE sce = new SCE();
+        sce.lerArgumentos(args);
+        Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
-        Assert.assertEquals(4, SCE.requisicoesOrdenadasPorAndar.get(2).size());
-
-        List<Requisicao> requisicoes = SCE.atenderRequisicao(2);
+        List<Requisicao> requisicoes = sce.getMonitorSCE().atenderRequisicao(2);
 
         Assert.assertEquals(3, requisicoes.size());
 
@@ -78,7 +85,7 @@ public class SCEUnitTest extends UnitTest
         Assert.assertEquals(4, requisicoes.get(1).getAndar());
         Assert.assertEquals(4, requisicoes.get(2).getAndar());
 
-        Assert.assertEquals(1, SCE.requisicoesOrdenadasPorAndar.get(2).size());
+        Assert.assertEquals(1, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
     }
 
     @Test
@@ -86,11 +93,11 @@ public class SCEUnitTest extends UnitTest
             throws Exception
     {
         String[] args = prepararEntrada(CAPACIDADE_MAXIMA_CINCO_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
-        SCE.lerArgumentos(args);
+        SCE sce = new SCE();
+        sce.lerArgumentos(args);
+        Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
-        Assert.assertEquals(4, SCE.requisicoesOrdenadasPorAndar.get(2).size());
-
-        List<Requisicao> requisicoes = SCE.atenderRequisicao(2);
+        List<Requisicao> requisicoes = sce.getMonitorSCE().atenderRequisicao(2);
 
         Assert.assertEquals(4, requisicoes.size());
 
@@ -99,14 +106,14 @@ public class SCEUnitTest extends UnitTest
         Assert.assertEquals(4, requisicoes.get(2).getAndar());
         Assert.assertEquals(3, requisicoes.get(3).getAndar());
 
-        Assert.assertEquals(0, SCE.requisicoesOrdenadasPorAndar.get(2).size());
+        Assert.assertEquals(0, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
     }
 
-    private void verificarRequisicoes(int andar, int[] andaresDestinoEsperados)
+    private void verificarRequisicoes(int andar, int[] andaresDestinoEsperados, SCE sce)
     {
         for (int i = 0; i < andaresDestinoEsperados.length; i++)
         {
-            List<Requisicao> listaRequisicoes = SCE.requisicoesOrdenadasPorAndar.get(andar);
+            List<Requisicao> listaRequisicoes = sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(andar);
             Assert.assertEquals(andaresDestinoEsperados[i], listaRequisicoes.get(i).getAndar());
         }
     }
