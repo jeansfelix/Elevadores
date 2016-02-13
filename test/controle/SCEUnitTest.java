@@ -77,7 +77,7 @@ public class SCEUnitTest extends UnitTest
         sce.lerArgumentos(args);
         Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
-        List<Requisicao> requisicoes = sce.getMonitorSCE().atenderRequisicao(2);
+        List<Requisicao> requisicoes = sce.getMonitorSCE().obterPessoasNoAndar(2);
 
         Assert.assertEquals(3, requisicoes.size());
 
@@ -97,7 +97,7 @@ public class SCEUnitTest extends UnitTest
         sce.lerArgumentos(args);
         Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
-        List<Requisicao> requisicoes = sce.getMonitorSCE().atenderRequisicao(2);
+        List<Requisicao> requisicoes = sce.getMonitorSCE().obterPessoasNoAndar(2);
 
         Assert.assertEquals(4, requisicoes.size());
 

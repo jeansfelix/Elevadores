@@ -19,9 +19,9 @@ public class ElevadorUnitTest extends UnitTest
 
         Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
-        int andar = elevador.buscarAndarComRequisicao();
+        elevador.irAteAndarComRequisicao();
 
-        Assert.assertEquals(andarAtual, andar);
+        Assert.assertEquals(andarAtual, elevador.getAndarAtual());
     }
 
     @Test
@@ -35,9 +35,10 @@ public class ElevadorUnitTest extends UnitTest
 
         Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
-        int andar = elevador.buscarAndarComRequisicao();
+        elevador.irAteAndarComRequisicao();
 
-        Assert.assertEquals(1, andar);
+
+        Assert.assertEquals(1, elevador.getAndarAtual());
     }
 
     @Test
@@ -52,9 +53,9 @@ public class ElevadorUnitTest extends UnitTest
 
         Elevador elevador = new Elevador(identificadorElevador, andarAtual, sce.getMonitorSCE());
 
-        int andar = elevador.buscarAndarComRequisicao();
+        elevador.irAteAndarComRequisicao();
 
-        Assert.assertEquals(andarComMaiorNumeroDeRequisicoes, andar);
+        Assert.assertEquals(andarComMaiorNumeroDeRequisicoes, elevador.getAndarAtual());
     }
 
     @Test

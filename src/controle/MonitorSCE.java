@@ -16,7 +16,7 @@ public class MonitorSCE
     private int                          quantidadeDeElevadores;
     private int                          maximoDeUsuariosPorElevador;
 
-    public synchronized List<Requisicao> atenderRequisicao(int andar)
+    public synchronized List<Requisicao> obterPessoasNoAndar(int andar)
     {
         List<Requisicao> requisicoes = new ArrayList<Requisicao>();
 
@@ -35,6 +35,71 @@ public class MonitorSCE
         return requisicoes;
     }
 
+    public synchronized Integer buscarAndarComRequisicao(int andarAtual)
+    {
+        int andarDestinoAcima = andarAtual;
+        int andarDestinoAbaixo = andarAtual;
+        Integer andarDestino = null;
+
+        while (!(andarDestinoAbaixo < 0 && andarDestinoAcima >= quantidadeDeAndares))
+        {
+            andarDestino = escolherAndarComRequisicaoMaisProximo(andarDestinoAcima, andarDestinoAbaixo);
+
+            if (andarDestino != null) return andarDestino;
+
+            if (andarDestinoAcima < quantidadeDeAndares
+                    && requisicoesOrdenadasPorAndar.get(andarDestinoAcima).isEmpty())
+            {
+                andarDestinoAcima = andarDestinoAcima + 1;
+            }
+
+            if (andarDestinoAbaixo >= 0 && requisicoesOrdenadasPorAndar.get(andarDestinoAbaixo).isEmpty())
+            {
+                andarDestinoAbaixo = andarDestinoAbaixo - 1;
+            }
+        }
+
+        return null;
+    }
+
+    private Integer escolherAndarComRequisicaoMaisProximo(int andarDestinoAcima, int andarDestinoAbaixo)
+    {
+        Integer andarDestino = null;
+
+        if (andarDestinoAcima < quantidadeDeAndares && verificarSeAndarTemRequisicao(andarDestinoAcima))
+        {
+            andarDestino = andarDestinoAcima;
+        }
+
+        if (andarDestinoAbaixo >= 0 && verificarSeAndarTemRequisicao(andarDestinoAbaixo))
+        {
+            if (andarDestino != null)
+            {
+                return obterAndarComMaisPessoasEsperando(andarDestinoAbaixo, andarDestino);
+            }
+
+            andarDestino = andarDestinoAbaixo;
+        }
+
+        return andarDestino;
+    }
+
+    private int obterAndarComMaisPessoasEsperando(int andarDestinoAbaixo, Integer andarDestino)
+    {
+        if (requisicoesOrdenadasPorAndar.get(andarDestinoAbaixo).size() > requisicoesOrdenadasPorAndar.get(andarDestino)
+                .size())
+        {
+            return andarDestinoAbaixo;
+        }
+
+        return andarDestino;
+    }
+
+    private boolean verificarSeAndarTemRequisicao(int andar)
+    {
+        return !requisicoesOrdenadasPorAndar.get(andar).isEmpty();
+    }
+
     public void incrementarNumeroDeRequisicoes(List<Requisicao> destinos)
     {
         if (!destinos.isEmpty())
@@ -47,7 +112,7 @@ public class MonitorSCE
     {
         numeroDeRequisicoes -= requisicoes.size();
     }
-    
+
     public boolean existemRequisicoes()
     {
         return numeroDeRequisicoes > 0;

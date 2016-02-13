@@ -22,81 +22,28 @@ public class Elevador implements Runnable
     {
         while (monitorSCE.existemRequisicoes())
         {
-            andarAtual = buscarAndarComRequisicao();
-
-            List<Requisicao> requisicoesAtendidas = monitorSCE.atenderRequisicao(andarAtual);
-
-            for (Requisicao requisicao : requisicoesAtendidas)
-            {
-                andarAtual = requisicao.getAndar();
-            }
+            irAteAndarComRequisicao();
+            List<Requisicao> requisicoesAtendidas = monitorSCE.obterPessoasNoAndar(andarAtual);
+            moverSeParaAndaresRequisitados(requisicoesAtendidas);
         }
     }
 
-    protected Integer buscarAndarComRequisicao()
+    private void moverSeParaAndaresRequisitados(List<Requisicao> requisicoesAtendidas)
     {
-        int andarDestinoAcima = andarAtual;
-        int andarDestinoAbaixo = andarAtual;
-        Integer andarDestino = null;
-
-        while (!(andarDestinoAbaixo < 0 && andarDestinoAcima >= monitorSCE.getQuantidadeDeAndares()))
+        for (Requisicao requisicao : requisicoesAtendidas)
         {
-            andarDestino = escolherAndarComRequisicaoMaisProximo(andarDestinoAcima, andarDestinoAbaixo);
-
-            if (andarDestino != null) return andarDestino;
-
-            if (andarDestinoAcima < monitorSCE.getQuantidadeDeAndares()
-                    && monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAcima).isEmpty())
-            {
-                andarDestinoAcima = andarDestinoAcima + 1;
-            }
-
-            if (andarDestinoAbaixo >= 0
-                    && monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAbaixo).isEmpty())
-            {
-                andarDestinoAbaixo = andarDestinoAbaixo - 1;
-            }
+            irAteAndar(requisicao.getAndar());
         }
-
-        return null;
     }
 
-    private Integer escolherAndarComRequisicaoMaisProximo(int andarDestinoAcima, int andarDestinoAbaixo)
+    private void irAteAndar(int andar)
     {
-        Integer andarDestino = null;
-
-        if (andarDestinoAcima < monitorSCE.getQuantidadeDeAndares() && verificarSeAndarTemRequisicao(andarDestinoAcima))
-        {
-            andarDestino = andarDestinoAcima;
-        }
-
-        if (andarDestinoAbaixo >= 0 && verificarSeAndarTemRequisicao(andarDestinoAbaixo))
-        {
-            if (andarDestino != null)
-            {
-                return obterAndarComMaisPessoasEsperando(andarDestinoAbaixo, andarDestino);
-            }
-
-            andarDestino = andarDestinoAbaixo;
-        }
-
-        return andarDestino;
+        andarAtual = andar;
     }
 
-    private int obterAndarComMaisPessoasEsperando(int andarDestinoAbaixo, Integer andarDestino)
+    protected void irAteAndarComRequisicao()
     {
-        if (monitorSCE.getRequisicoesOrdenadasPorAndar().get(andarDestinoAbaixo).size() > monitorSCE
-                .getRequisicoesOrdenadasPorAndar().get(andarDestino).size())
-        {
-            return andarDestinoAbaixo;
-        }
-
-        return andarDestino;
-    }
-
-    private boolean verificarSeAndarTemRequisicao(int andar)
-    {
-        return !monitorSCE.getRequisicoesOrdenadasPorAndar().get(andar).isEmpty();
+        andarAtual = monitorSCE.buscarAndarComRequisicao(andarAtual);
     }
 
     public int getAndarAtual()
