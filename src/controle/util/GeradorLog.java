@@ -13,7 +13,6 @@ public class GeradorLog
     public GeradorLog(String nomeArquivo)
     {
         FileWriter log;
-        
         String caminhoArquivo = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + nomeArquivo;
         
         try

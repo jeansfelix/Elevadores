@@ -19,8 +19,10 @@ public class MonitorSCE
 
     public synchronized TuplaAndarRequisicoes obterPessoasNoAndarComRequisicaoMaisProximo(int andarAtual)
     {
-        int andarDestino = buscarAndarComRequisicaoMaisProximo(andarAtual);
+        if (!existemRequisicoes()) return null;
         
+        int andarDestino = buscarAndarComRequisicaoMaisProximo(andarAtual);
+
         List<Requisicao> requisicoes = new ArrayList<Requisicao>();
 
         for (int i = 0; i < maximoDeUsuariosPorElevador; i++)
@@ -36,6 +38,19 @@ public class MonitorSCE
         decrementarNumeroDeRequisicoes(requisicoes);
 
         return new TuplaAndarRequisicoes(andarDestino, requisicoes);
+    }
+
+    public synchronized boolean existemRequisicoes()
+    {
+        return numeroDeRequisicoes > 0;
+    }
+
+    public void incrementarNumeroDeRequisicoes(List<Requisicao> destinos)
+    {
+        if (!destinos.isEmpty())
+        {
+            numeroDeRequisicoes += destinos.size();
+        }
     }
 
     protected Integer buscarAndarComRequisicaoMaisProximo(int andarAtual)
@@ -98,37 +113,19 @@ public class MonitorSCE
         return andarDestino;
     }
 
+    private void decrementarNumeroDeRequisicoes(List<Requisicao> requisicoes)
+    {
+        numeroDeRequisicoes -= requisicoes.size();
+    }
+
     private boolean verificarSeAndarTemRequisicao(int andar)
     {
         return !requisicoesOrdenadasPorAndar.get(andar).isEmpty();
-    }
-    
-    public synchronized boolean existemRequisicoes()
-    {
-        return numeroDeRequisicoes > 0;
-    }
-
-    public void incrementarNumeroDeRequisicoes(List<Requisicao> destinos)
-    {
-        if (!destinos.isEmpty())
-        {
-            numeroDeRequisicoes += destinos.size();
-        }
-    }
-
-    public void decrementarNumeroDeRequisicoes(List<Requisicao> requisicoes)
-    {
-        numeroDeRequisicoes -= requisicoes.size();
     }
 
     public int getNumeroDeRequisicoes()
     {
         return numeroDeRequisicoes;
-    }
-
-    public void setNumeroDeRequisicoes(int numeroDeRequisicoes)
-    {
-        this.numeroDeRequisicoes = numeroDeRequisicoes;
     }
 
     public int getQuantidadeDeAndares()

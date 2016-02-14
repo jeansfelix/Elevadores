@@ -31,15 +31,18 @@ public class Main
         geradorLog.escreverLog("Startando threads elevadores.");
         sistemaControladorDeElevadores.iniciarElevadores();
         
-        geradorLog.escreverLog("Iniciando esperando elevadores terminarem.");
+        geradorLog.escreverLog("Esperando elevadores terminarem.");
         sistemaControladorDeElevadores.esperarElevadoresTerminarem();
         
-        Long tempoDecorrido = ContadorDeTempo.tempDecorrido();
+        geradorLog.fecharArquivos();
         
         String localDosLogs =  Main.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+
+        Long tempoDecorrido = ContadorDeTempo.tempDecorrido();
         
-        System.out.println("Os logs do programa se encontram no diretorio: " + localDosLogs);
         System.out.println("Fim de Programa.");
         System.out.println("Tempo Total: " + tempoDecorrido + "ms");
+        System.out.println();
+        System.out.println("Os logs do programa se encontram no diretorio: " + localDosLogs);
     }
 }

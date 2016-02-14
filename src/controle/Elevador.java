@@ -10,10 +10,11 @@ public class Elevador implements Runnable
 {
     private static final String PONTO  = ".";
     private static final String ESPACO = " ";
-    private MonitorSCE          monitorSCE;
+
     private int                 identificador;
     private int                 andarAtual;
     private GeradorLog          geradorLog;
+    private MonitorSCE          monitorSCE;
 
     public Elevador(int identificador, int andarInicial, MonitorSCE monitorSCE)
     {
@@ -29,6 +30,13 @@ public class Elevador implements Runnable
         while (monitorSCE.existemRequisicoes())
         {
             TuplaAndarRequisicoes andarRequisicoes = obterRequisicoesDoAndarMaisProximo();
+
+            if (andarRequisicoes == null)
+            {
+                geradorLog.escreverLog("Acabaram as requisicoes.");
+                break;
+            }
+
             irAteAndarComRequisicaoEPegarPassageiros(andarRequisicoes);
             irParaAndaresRequisitados(andarRequisicoes.getRequisicoes());
         }
@@ -38,18 +46,37 @@ public class Elevador implements Runnable
 
     private TuplaAndarRequisicoes obterRequisicoesDoAndarMaisProximo()
     {
+        geradorLog.escreverLog(montarMsgEncontrarAndarMaisProximoComRequisicoes());
+
         TuplaAndarRequisicoes andarRequisicoes = monitorSCE.obterPessoasNoAndarComRequisicaoMaisProximo(andarAtual);
+
+        geradorLog.escreverLog(montarMsgEncontrouAndarComRequisicoes(andarRequisicoes.getAndar()));
 
         return andarRequisicoes;
     }
 
     private void irParaAndaresRequisitados(List<Requisicao> requisicoesAtendidas)
     {
+        int andar = andarAtual;
+
         for (Requisicao requisicao : requisicoesAtendidas)
         {
-            irAteAndar(requisicao.getAndar());
+            andar = requisicao.getAndar();
+            irAteAndar(andar);
             geradorLog.escreverLog(montarMsgIrAteAndarEDeixarPassageiro(requisicao));
         }
+
+        geradorLog.escreverLog(montarMsgElevadorParouNoAndar(andar));
+    }
+
+    private String montarMsgElevadorParouNoAndar(int andar)
+    {
+        StringBuilder sb = new StringBuilder("");
+
+        sb.append("Elevador ").append(identificador).append(ESPACO).append("para no andar ").append(andar)
+                .append(PONTO);
+
+        return sb.toString();
     }
 
     private void irAteAndar(int andar)
@@ -59,11 +86,30 @@ public class Elevador implements Runnable
 
     private void irAteAndarComRequisicaoEPegarPassageiros(TuplaAndarRequisicoes andarRequisicoes)
     {
-        geradorLog.escreverLog(montarMsgElevadorDescobriuAndarComRequisicoes(andarRequisicoes.getAndar()));
         geradorLog.escreverLog(montarMsgIrAteAndar(andarRequisicoes.getAndar()));
         geradorLog.escreverLog(montarMsgPegarPassageiros(andarRequisicoes.getRequisicoes()));
 
         andarAtual = andarRequisicoes.getAndar();
+    }
+
+    private String montarMsgEncontrarAndarMaisProximoComRequisicoes()
+    {
+        StringBuilder sb = new StringBuilder("");
+
+        sb.append("Elevador ").append(identificador).append(ESPACO)
+                .append("procurando por andar mais proximo com pessoas na fila.");
+
+        return sb.toString();
+    }
+
+    private String montarMsgEncontrouAndarComRequisicoes(Integer andar)
+    {
+        StringBuilder sb = new StringBuilder("");
+
+        sb.append("Elevador ").append(identificador).append(ESPACO).append("encontrou andar ").append(andar)
+                .append(ESPACO).append("com pessoas na fila.");
+
+        return sb.toString();
     }
 
     private String montarMsgIrAteAndar(int andar)
@@ -82,16 +128,6 @@ public class Elevador implements Runnable
 
         sb.append(montarMsgIrAteAndar(requisicao.getAndar())).append("Passageiro ")
                 .append(requisicao.getIdentificador()).append(ESPACO).append("desce.");
-
-        return sb.toString();
-    }
-
-    private String montarMsgElevadorDescobriuAndarComRequisicoes(int andar)
-    {
-        StringBuilder sb = new StringBuilder("");
-
-        sb.append("Elevador ").append(identificador).append(ESPACO).append("descobre que andar ").append(andar)
-                .append(ESPACO).append("possui requisicao").append(PONTO);
 
         return sb.toString();
     }
