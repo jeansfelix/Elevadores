@@ -6,7 +6,6 @@ import java.util.Scanner;
 
 public class UnitTest
 {
-   
     public String[] prepararEntrada(String dataset_entrada) throws FileNotFoundException
     {
         String[] entrada = new String[36];

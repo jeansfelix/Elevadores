@@ -1,17 +1,39 @@
 package controle;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import controle.util.GeradorDeIndentificadores;
 import modelo.Requisicao;
 import modelo.excecoes.EntradaIncorretaExcetion;
+import modelo.excecoes.EsperarElevadorFinalizarException;
 
 public class SCE
 {
     private final GeradorDeIndentificadores geradorDeIndentificadores = new GeradorDeIndentificadores();
     private final MonitorSCE                monitorSCE                = new MonitorSCE();
     private List<Thread>                    elevadores                = new ArrayList<Thread>();
+
+    public void lerArgumentos(String arquivo_entrada)
+    {
+        Integer[] argumentos_entrada = lerArquivoDeEntrada(arquivo_entrada);
+
+        monitorSCE.setQuantidadeDeAndares(argumentos_entrada[0]);
+        monitorSCE.setQuantidadeDeElevadores(argumentos_entrada[1]);
+        monitorSCE.setMaximoDeUsuariosPorElevador(argumentos_entrada[2]);
+
+        int inicio_declaracao_posicao_inicial_elevadores = 3;
+
+        obterPosicaoInicialElevadores(argumentos_entrada, inicio_declaracao_posicao_inicial_elevadores);
+
+        int inicio_declaracao_usuarios_em_cada_andar = monitorSCE.getQuantidadeDeElevadores()
+                + inicio_declaracao_posicao_inicial_elevadores;
+
+        obterRequisicaoPorAndar(argumentos_entrada, inicio_declaracao_usuarios_em_cada_andar);
+    }
 
     public void criarElevadores()
     {
@@ -42,57 +64,66 @@ public class SCE
             }
             catch (InterruptedException e)
             {
-                e.printStackTrace();
+                throw new EsperarElevadorFinalizarException("Erro ao esperar threads terminarem.", e);
             }
         }
 
     }
 
-    public void lerArgumentos(String[] args)
+    private Integer[] lerArquivoDeEntrada(String arquivo)
     {
-        monitorSCE.setQuantidadeDeAndares(Integer.parseInt(args[0]));
-        monitorSCE.setQuantidadeDeElevadores(Integer.parseInt(args[1]));
-        monitorSCE.setMaximoDeUsuariosPorElevador(Integer.parseInt(args[2]));
+        Scanner leitor;
+        try
+        {
+            leitor = new Scanner(new File(arquivo));
+            List<Integer> argumentos = new ArrayList<Integer>();
+            while (leitor.hasNextInt())
+            {
+                argumentos.add(leitor.nextInt());
+            }
+            leitor.close();
 
-        int inicio_declaracao_posicao_inicial_elevadores = 3;
+            Integer[] argumentos_entrada = argumentos.toArray(new Integer[argumentos.size()]);
 
-        obterPosicaoInicialElevadores(args, inicio_declaracao_posicao_inicial_elevadores);
+            return argumentos_entrada;
+        }
+        catch (FileNotFoundException e)
+        {
+            e.printStackTrace();
+        }
 
-        int inicio_declaracao_usuarios_em_cada_andar = monitorSCE.getQuantidadeDeElevadores()
-                + inicio_declaracao_posicao_inicial_elevadores;
-
-        obterRequisicaoPorAndar(args, inicio_declaracao_usuarios_em_cada_andar);
+        return null;
     }
 
-    private void obterPosicaoInicialElevadores(String[] args, int inicio_declaracao_posicao_inicial_elevadores)
+    private void obterPosicaoInicialElevadores(Integer[] argumentos_entrada,
+            int inicio_declaracao_posicao_inicial_elevadores)
     {
         for (int i = 0; i < monitorSCE.getQuantidadeDeElevadores(); i++)
         {
             monitorSCE.getPosicaoInicialDosElevadores()
-                    .add(Integer.parseInt(args[i + inicio_declaracao_posicao_inicial_elevadores]));
+                    .add(argumentos_entrada[i + inicio_declaracao_posicao_inicial_elevadores]);
         }
     }
 
-    private void obterRequisicaoPorAndar(String[] args, int inicio_declaracao_usuarios_em_cada_andar)
+    private void obterRequisicaoPorAndar(Integer[] argumentos_entrada, int inicio_declaracao_usuarios_em_cada_andar)
     {
         int posicaoNoArrayDaQuantidadePessoasNoAndar = inicio_declaracao_usuarios_em_cada_andar;
 
         for (int i = 0; i < monitorSCE.getQuantidadeDeAndares(); i++)
         {
             List<Requisicao> destinos = new ArrayList<Requisicao>();
-            String stringQuantidadeDePessoasNoAndar = args[posicaoNoArrayDaQuantidadePessoasNoAndar];
 
-            if (stringQuantidadeDePessoasNoAndar == null || stringQuantidadeDePessoasNoAndar.isEmpty())
+            if (posicaoNoArrayDaQuantidadePessoasNoAndar >= argumentos_entrada.length)
             {
                 monitorSCE.getRequisicoesOrdenadasPorAndar().add(new ArrayList<Requisicao>());
                 continue;
             }
 
-            int quantidadeDePessoasNoAndar = Integer.parseInt(stringQuantidadeDePessoasNoAndar);
+            Integer quantidadeDePessoasNoAndar = argumentos_entrada[posicaoNoArrayDaQuantidadePessoasNoAndar];
 
             for (int j = 0; j < quantidadeDePessoasNoAndar; j++)
             {
-                int andarDestino = Integer.parseInt(args[posicaoNoArrayDaQuantidadePessoasNoAndar + j + 1]);
+                int andarDestino = argumentos_entrada[posicaoNoArrayDaQuantidadePessoasNoAndar + j + 1];
 
                 if (andarDestino > (monitorSCE.getQuantidadeDeAndares() - 1))
                 {
@@ -105,8 +136,7 @@ public class SCE
             monitorSCE.incrementarNumeroDeRequisicoes(destinos);
 
             monitorSCE.getRequisicoesOrdenadasPorAndar().add(destinos);
-            posicaoNoArrayDaQuantidadePessoasNoAndar = posicaoNoArrayDaQuantidadePessoasNoAndar
-                    + quantidadeDePessoasNoAndar + 1;
+            posicaoNoArrayDaQuantidadePessoasNoAndar += quantidadeDePessoasNoAndar + 1;
         }
     }
 

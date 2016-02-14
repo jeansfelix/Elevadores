@@ -10,9 +10,12 @@ public class GeradorLog
 {
     BufferedWriter escritor;
 
-    public GeradorLog(String caminhoArquivo)
+    public GeradorLog(String nomeArquivo)
     {
         FileWriter log;
+        
+        String caminhoArquivo = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + nomeArquivo;
+        
         try
         {
             log = new FileWriter(caminhoArquivo);
@@ -20,7 +23,7 @@ public class GeradorLog
         }
         catch (IOException e)
         {
-            throw new ManipularArquivosDeLogException(e, "Erro ao tentar abrir arquivo de log:" + caminhoArquivo + ".");
+            throw new ManipularArquivosDeLogException(e, "Erro ao tentar abrir arquivo de log:" + nomeArquivo + ".");
         }
     }
 
@@ -29,6 +32,7 @@ public class GeradorLog
         try
         {
             StringBuilder sb = new StringBuilder("");
+            
             Long tempoAtual = ContadorDeTempo.tempDecorrido();
 
             sb.append(tempoAtual).append("ms: ").append(mensagem);

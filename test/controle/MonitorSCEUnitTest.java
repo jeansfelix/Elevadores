@@ -15,7 +15,7 @@ public class MonitorSCEUnitTest extends UnitTest
         int andarAtual = 1;
 
         SCE sce = new SCE();
-        sce.lerArgumentos(prepararEntrada(REQUISICAO_NOS_ANDARES_ZERO_E_UM));
+        sce.lerArgumentos(REQUISICAO_NOS_ANDARES_ZERO_E_UM);
 
         int andarRetornado = sce.getMonitorSCE().buscarAndarComRequisicaoMaisProximo(andarAtual);
 
@@ -29,7 +29,7 @@ public class MonitorSCEUnitTest extends UnitTest
         int andarAtual = 0;
 
         SCE sce = new SCE();
-        sce.lerArgumentos(prepararEntrada(REQUISICAO_APENAS_NO_ANDAR_UM));
+        sce.lerArgumentos(REQUISICAO_APENAS_NO_ANDAR_UM);
 
         int andarRetornado = sce.getMonitorSCE().buscarAndarComRequisicaoMaisProximo(andarAtual);
 
@@ -43,7 +43,7 @@ public class MonitorSCEUnitTest extends UnitTest
         int andarAtual = 1;
         int andarComMaiorNumeroDeRequisicoes = 0;
         SCE sce = new SCE();
-        sce.lerArgumentos(prepararEntrada(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES));
+        sce.lerArgumentos(DOIS_ANDARES_IGUALMENTE_PROXIMOS_COM_REQUISICOES);
 
         int andarRetornado = sce.getMonitorSCE().buscarAndarComRequisicaoMaisProximo(andarAtual);
 

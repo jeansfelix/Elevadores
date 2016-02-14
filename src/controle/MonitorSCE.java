@@ -3,8 +3,8 @@ package controle;
 import java.util.ArrayList;
 import java.util.List;
 
-import modelo.TuplaAndarRequisicoes;
 import modelo.Requisicao;
+import modelo.TuplaAndarRequisicoes;
 
 public class MonitorSCE
 {

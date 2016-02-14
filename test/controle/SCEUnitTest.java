@@ -18,10 +18,9 @@ public class SCEUnitTest extends UnitTest
     @Test
     public void testLerArgumentos_DeveArmazenarValoresCorretos() throws Exception
     {
-        String[] args = prepararEntrada(DATASET_ENTRADA_CORRETA_MAIN);
         SCE sce = new SCE();
 
-        sce.lerArgumentos(args);
+        sce.lerArgumentos(DATASET_ENTRADA_CORRETA_MAIN);
 
         Assert.assertEquals(5, sce.getMonitorSCE().getQuantidadeDeAndares());
         Assert.assertEquals(2, sce.getMonitorSCE().getQuantidadeDeElevadores());
@@ -53,13 +52,10 @@ public class SCEUnitTest extends UnitTest
     @Test
     public void testLerArgumentos_AndarDestinoMaiorQueUltimoAndar_DeveLancarExcecao() throws Exception
     {
-        String[] args = prepararEntrada(DATASET_ENTRADA_INCORRETA_MAIN);
-
         try
         {
             SCE sce = new SCE();
-
-            sce.lerArgumentos(args);
+            sce.lerArgumentos(DATASET_ENTRADA_INCORRETA_MAIN);
             Assert.fail("Deveria lançar exceção ao ler andar destino maior que o último andar.");
         }
         catch (Exception e)
@@ -72,9 +68,8 @@ public class SCEUnitTest extends UnitTest
     public void testAtenderRequisicao_CapacidadeMaximaTres_AndarDois_RequisicoesInsuficientes_DeveRetornarPrimeirasRequisicoes()
             throws Exception
     {
-        String[] args = prepararEntrada(CAPACIDADE_MAXIMA_TRES_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
         SCE sce = new SCE();
-        sce.lerArgumentos(args);
+        sce.lerArgumentos(CAPACIDADE_MAXIMA_TRES_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
         Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
         List<Requisicao> requisicoes = sce.getMonitorSCE().obterPessoasNoAndarComRequisicaoMaisProximo(2)
@@ -93,9 +88,8 @@ public class SCEUnitTest extends UnitTest
     public void testAtenderRequisicao_CapacidadeMaximaTres_AndarDois_DeveRetornarTresPrimeirasRequisicoes()
             throws Exception
     {
-        String[] args = prepararEntrada(CAPACIDADE_MAXIMA_CINCO_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
         SCE sce = new SCE();
-        sce.lerArgumentos(args);
+        sce.lerArgumentos(CAPACIDADE_MAXIMA_CINCO_ANDAR_DOIS_COM_QUATRO_REQUISICOES);
         Assert.assertEquals(4, sce.getMonitorSCE().getRequisicoesOrdenadasPorAndar().get(2).size());
 
         List<Requisicao> requisicoes = sce.getMonitorSCE().obterPessoasNoAndarComRequisicaoMaisProximo(2)
