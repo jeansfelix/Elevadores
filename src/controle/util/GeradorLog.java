@@ -10,11 +10,11 @@ public class GeradorLog
 {
     BufferedWriter escritor;
 
-    public GeradorLog(String nomeArquivo)
+    public GeradorLog(String diretorioDestino, String nomeArquivo)
     {
         FileWriter log;
-        String caminhoArquivo = getClass().getProtectionDomain().getCodeSource().getLocation().getPath() + nomeArquivo;
-        
+        String caminhoArquivo = diretorioDestino + "/" + nomeArquivo;
+
         try
         {
             log = new FileWriter(caminhoArquivo);
@@ -31,7 +31,7 @@ public class GeradorLog
         try
         {
             StringBuilder sb = new StringBuilder("");
-            
+
             Long tempoAtual = ContadorDeTempo.tempDecorrido();
 
             sb.append(tempoAtual).append("ms: ").append(mensagem);

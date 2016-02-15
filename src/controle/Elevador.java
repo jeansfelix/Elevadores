@@ -21,7 +21,7 @@ public class Elevador implements Runnable
         this.monitorSCE = monitorSCE;
         this.identificador = identificador;
         this.andarAtual = andarInicial;
-        geradorLog = new GeradorLog("elevador_" + identificador);
+        geradorLog = new GeradorLog(Main.diretorioDestino, "elevador_" + identificador);
     }
 
     @Override
